@@ -3,6 +3,38 @@ public class MorseTree {
 
     public MorseTree() {
         this.root = new TreeNode("");
+        montaArvore();
+    }
+
+
+    private void montaArvore() {
+        insert(".", "E");
+        insert("-", "T");
+        insert("..", "I");
+        insert(".-", "A");
+        insert("-.", "N");
+        insert("--", "M");
+
+        insert("...", "S");
+        insert("..-", "U");
+        insert(".-.", "R");
+        insert(".--", "W");
+        insert("-..", "D");
+        insert("-.-", "K");
+        insert("--.", "G");
+        insert("---", "O");
+
+        insert("....", "H");
+        insert("...-", "V");
+        insert("..-.", "F");
+        insert(".-..", "L");
+        insert(".--.", "P");
+        insert(".---", "J");
+        insert("-...", "B");
+        insert("-..-", "X");
+        insert("-.--", "Y");
+        insert("--..", "Z");
+        insert("--.-", "Q");
     }
 
     public void insert(String code, String value) {
@@ -27,8 +59,8 @@ public class MorseTree {
         StringBuilder result = new StringBuilder();
         String[] tokens = morseMessage.trim().split(" ");
         for (String token : tokens) {
-            if (token.equals("/")) {
-                result.append(" ");
+            if ("/".equals(token)) {
+                result.append(' ');
             } else {
                 result.append(decodeSymbol(token));
             }
@@ -39,32 +71,29 @@ public class MorseTree {
     private String decodeSymbol(String code) {
         TreeNode current = root;
         for (char c : code.toCharArray()) {
-            if (current == null) return "";
             current = (c == '.') ? current.getLeft() : current.getRight();
+            if (current == null) {
+                return "?";
+            }
         }
-        return (current != null) ? current.getValue() : "";
+        return current.getValue();
     }
 
     public String encode(String text) {
-        StringBuilder result = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         String[] words = text.toUpperCase().split("\\s+");
         for (int w = 0; w < words.length; w++) {
             String word = words[w];
             for (int i = 0; i < word.length(); i++) {
-                String ch = String.valueOf(word.charAt(i));
-                String code = encodeSymbol(ch);
-                if (code != null && !code.isEmpty()) {
-                    result.append(code);
-                }
-                if (i < word.length() - 1) {
-                    result.append(" ");
+                String morse = encodeSymbol(word.substring(i, i + 1));
+                if (morse != null) {
+                    sb.append(morse);
+                    if (i < word.length() - 1) sb.append(' ');
                 }
             }
-            if (w < words.length - 1) {
-                result.append(" / ");
-            }
+            if (w < words.length - 1) sb.append(" / ");
         }
-        return result.toString();
+        return sb.toString();
     }
 
     private String encodeSymbol(String target) {
@@ -76,9 +105,9 @@ public class MorseTree {
         if (target.equals(node.getValue())) {
             return path;
         }
-        String left = encodeRecursive(node.getLeft(), target, path + ".");
+        String left = encodeRecursive(node.getLeft(), target, path + '.');
         if (left != null) return left;
-        return encodeRecursive(node.getRight(), target, path + "-");
+        return encodeRecursive(node.getRight(), target, path + '-');
     }
 
     public TreeNode getRoot() {

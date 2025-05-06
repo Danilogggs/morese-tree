@@ -2,42 +2,55 @@ import java.util.Scanner;
 import java.io.IOException;
 
 public class Main {
-    private static final String[][] MAPPINGS = {
-        {"A", ".-"}, {"B", "-..."}, {"C", "-.-."}, {"D", "-.."},
-        {"E", "."},  {"F", "..-."}, {"G", "--."},  {"H", "...."},
-        {"I", ".."}, {"J", ".---"}, {"K", "-.-"},  {"L", ".-.."},
-        {"M", "--"}, {"N", "-."},   {"O", "---"},  {"P", ".--."},
-        {"Q", "--.-"},{"R", ".-."}, {"S", "..."},  {"T", "-"},
-        {"U", "..-"},{"V", "...-"}, {"W", ".--"},  {"X", "-..-"},
-        {"Y", "-.--"},{"Z", "--.."}
-    };
+    public static void main(String[] args) {
+        MorseTree morseTree = null;
 
-    public static void main(String[] args) throws IOException {
-        MorseTree morseTree = new MorseTree();
-        for (String[] map : MAPPINGS) {
-            morseTree.insert(map[1], map[0]);
+        try {
+            morseTree = new MorseTree();
+            MorseTreeImageGenerator.saveTreeImage(morseTree.getRoot(), "tree.png");
+            System.out.println("Arvore: tree.png");
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar tree.png: " + e.getMessage());
         }
-        MorseTreeImageGenerator.saveTreeImage(morseTree.getRoot(), "tree.png");
+
         Scanner scanner = new Scanner(System.in);
-        System.out.println("1 - Decodificar Morse => Texto");
-        System.out.println("2 - Codificar Texto => Morse");
+        System.out.println("1 - Decodificar Morse para Texto");
+        System.out.println("2 - Codificar Texto para Morse");
         System.out.print("Selecione a opção: ");
         String option = scanner.nextLine().trim();
+
         if (option.equals("1")) {
+            System.out.print("Digite o código Morse ('/' entre palavras, se for mais de uma): ");
             String morseInput = scanner.nextLine();
             String decoded = morseTree.decode(morseInput);
-            System.out.println(decoded);
-            MorseTreeImageGenerator.saveTreeImageWithPath(morseTree.getRoot(), morseInput, "decode.png");
-            
+            System.out.println("Texto decodificado: " + decoded);
+            try {
+                MorseTreeImageGenerator.saveTreeImageWithPath(
+                        morseTree.getRoot(), morseInput, "decode.png"
+                );
+                System.out.println("Arvore decode: decode.png");
+            } catch (IOException e) {
+                System.err.println("Erro ao salvar decode.png: " + e.getMessage());
+            }
+
         } else if (option.equals("2")) {
+            System.out.print("Digite o texto: ");
             String textInput = scanner.nextLine();
             String encoded = morseTree.encode(textInput);
-            System.out.println(encoded);
-            MorseTreeImageGenerator.saveTreeImageWithPath(morseTree.getRoot(), encoded, "encode.png");
+            System.out.println("Código Morse: " + encoded);
+            try {
+                MorseTreeImageGenerator.saveTreeImageWithPath(
+                        morseTree.getRoot(), encoded, "encode.png"
+                );
+                System.out.println("Arquivo encopde: encode.png ");
+            } catch (IOException e) {
+                System.err.println("Erro ao salvar encode.png: " + e.getMessage());
+            }
+
         } else {
             System.out.println("Opção inválida.");
         }
-        System.out.println("Verificar imagens geradas :D");
+
         scanner.close();
     }
 }
